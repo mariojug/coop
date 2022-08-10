@@ -6,9 +6,10 @@ import TextInput from "../components/styled/TextInput";
 import Button from "../components/styled/Button";
 import InlineTextLink from "../components/styled/InlineTextLink";
 
-interface WrapperProps {
+interface LoginInterface {
   children?: JSX.Element;
 }
+
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,7 +26,7 @@ const TextContainer = styled.div`
   font-size: 1rem;
 `;
 
-const LoginWrapper: React.FC<WrapperProps> = (props) => {
+const LoginWrapper: React.FC<LoginInterface> = (props) => {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 

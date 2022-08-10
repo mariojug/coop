@@ -2,12 +2,13 @@ import { ElementColors, Fonts } from "../../constants/styles";
 import React from "react";
 import styled from "styled-components";
 
-interface StringInputProps {
+interface TextInputInterface {
   id: string;
   label?: string;
   type: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
+  defaultValue?: string;
 }
 
 const InputContainer = styled.div`
@@ -32,7 +33,7 @@ const StyledInput = styled.input`
   width: 100%;
   margin: 0.5rem 0rem;
   padding: 0.7rem;
-  border-radius: 1em;
+  border-radius: 0.75em;
   border: none;
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box; /* Firefox, other Gecko */
@@ -59,7 +60,7 @@ const StyledInput = styled.input`
   }
 `;
 
-const TextInput: React.FC<StringInputProps> = (props) => {
+const TextInput: React.FC<TextInputInterface> = (props) => {
   return (
     <InputContainer>
       {props.label ? (
@@ -71,7 +72,8 @@ const TextInput: React.FC<StringInputProps> = (props) => {
         id={props.id}
         type={props.type}
         onChange={(e) => props.onChange(e)}
-        placeholder={props.placeholder ? props.placeholder : ""}
+        placeholder={props.placeholder! || ""}
+        defaultValue={props.defaultValue}
       />
     </InputContainer>
   );

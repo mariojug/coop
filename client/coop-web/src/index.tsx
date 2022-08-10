@@ -18,7 +18,7 @@ const GlobalStyle = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0;
-  height: 100%;
+  height: 100vh;
 `;
 
 const root = ReactDOM.createRoot(

@@ -6,7 +6,7 @@ import Button from "../components/styled/Button";
 
 import { ElementColors } from "../constants/styles";
 
-interface WrapperProps {
+interface SignupInterface {
   children?: JSX.Element;
 }
 
@@ -40,7 +40,7 @@ const PasswordErrorContainer = styled.div`
   font-size: 0.9rem;
 `;
 
-const SignupWrapper: React.FC<WrapperProps> = (props) => {
+const Signup: React.FC<SignupInterface> = (props) => {
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
   const [email, setEmail] = useState<string>();
@@ -134,4 +134,4 @@ const SignupWrapper: React.FC<WrapperProps> = (props) => {
   );
 };
 
-export default SignupWrapper;
+export default Signup;

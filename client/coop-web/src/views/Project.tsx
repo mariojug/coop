@@ -1,7 +1,8 @@
 import React from "react";
+import Kanban from "../components/Kanban";
 
 const Project = () => {
-  return <div>Project</div>;
+  return <Kanban id="test" />;
 };
 
 export default Project;

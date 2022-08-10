@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { ElementColors, Fonts } from "../../constants/styles";
 
-interface InlineTextProps {
+interface InlineTextInterface {
   href?: string | "#";
   children?: JSX.Element;
 }
@@ -17,7 +17,7 @@ const TextLinkStyled = styled.a`
   }
 `;
 
-const TextLink: React.FC<InlineTextProps> = (props) => {
+const TextLink: React.FC<InlineTextInterface> = (props) => {
   return <TextLinkStyled href={props.href}>{props.children}</TextLinkStyled>;
 };
 
