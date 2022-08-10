@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import { Editor, EditorState } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  ContentState,
+  convertToRaw,
+  convertFromRaw,
+  RawDraftContentState,
+  RichUtils,
+  DraftEditorCommand,
+} from "draft-js";
 import "draft-js/dist/Draft.css";
 
 import CheckboxInput from "../styled/CheckboxInput";
@@ -21,7 +30,7 @@ export interface KanbanCardInterface {
   dueDate: number;
   createdBy: string;
   assignedTo: Array<string>;
-  description: string;
+  description: RawDraftContentState;
   completed: false;
   priority: number;
 }
@@ -33,7 +42,8 @@ const CardStyled = styled.div`
   margin: 0.25em;
   background-color: ${ElementColors.KANBAN_CARD_BG_DARK_MODE};
   border-radius: 0.25em;
-  min-width: 10rem;
+  min-width: 16rem;
+  max-width: 16rem;
 `;
 
 const CardDateStyled = styled.div`
@@ -61,14 +71,24 @@ const ButtonRowStyled = styled.div`
 const KanbanCard: React.FC<KanbanCardInterface> = (props) => {
   // const { id, board } = useKanban();
 
-  const [editorState, setEditorState] = useState<EditorState>(() =>
-    EditorState.createEmpty()
+  // local state - editors
+  const [nameState, setNameState] = useState<EditorState>(() =>
+    EditorState.createWithContent(ContentState.createFromText(props.name))
   );
 
+  const [descriptionState, setDescriptionState] = useState<EditorState>(
+    props.description
+      ? () => EditorState.createWithContent(convertFromRaw(props.description))
+      : EditorState.createEmpty()
+  );
+
+  // local state - primitives
   const [name, setName] = useState<string>(props.name);
+  const [description, setDescription] = useState<RawDraftContentState>(
+    props.description
+  );
   const [completed, setCompleted] = useState<boolean>(props.completed);
-  const [showDescription, setShowDescription] = useState<boolean>(false);
-  const [showEditBox, setShowEditBox] = useState<boolean>(false);
+  const [showMore, setShowMore] = useState<boolean>(false);
   const [dueDate, setDueDate] = useState<Date>(new Date(props.dueDate * 1000));
 
   const handleCheckboxClick = (e: React.FormEvent<HTMLInputElement>) => {
@@ -79,7 +99,33 @@ const KanbanCard: React.FC<KanbanCardInterface> = (props) => {
     // -- api update
   };
 
-  useEffect(() => console.log(editorState), [editorState]);
+  // TODO: write in UI for element changes (bold/italic/etc)
+  const handleKeyCommand = (
+    command: DraftEditorCommand,
+    editorState: EditorState
+  ) => {
+    console.log(command);
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setDescriptionState(editorState);
+      return "handled";
+    } else {
+      return "not-handled";
+    }
+  };
+
+  // update local primitives state variable for name every time the editor updates
+  useEffect(
+    () => setName(nameState.getCurrentContent().getPlainText()),
+    [nameState]
+  );
+
+  useEffect(() => {
+    const descriptionContent = descriptionState.getCurrentContent();
+    if (descriptionContent.hasText()) {
+      setDescription(convertToRaw(descriptionContent));
+    }
+  }, [descriptionState]);
 
   return (
     <>
@@ -108,39 +154,26 @@ const KanbanCard: React.FC<KanbanCardInterface> = (props) => {
             maxHeight="2rem"
             element={<ArrowIosDownward size="small" />}
             onClick={(e: React.ChangeEvent<HTMLButtonElement>) => {
-              setShowDescription(!showDescription);
-            }}
-          />
-          <Button
-            text="edit"
-            maxHeight="2rem"
-            element={<Edit3 size="small" />}
-            onClick={(e: React.ChangeEvent<HTMLButtonElement>) => {
-              if (showDescription) {
-                setShowDescription(false);
-              }
-              setShowEditBox(!showEditBox);
+              setShowMore(!showMore);
             }}
           />
         </ButtonRowStyled>
-        {showDescription && (
+        {showMore && (
           <DescriptBoxStyled>
-            {props.description}
+            <b>
+              <Editor
+                placeholder="Kanban card name..."
+                editorState={nameState}
+                onChange={setNameState}
+              />
+            </b>
             <hr />
-          </DescriptBoxStyled>
-        )}
-        {showEditBox && (
-          <DescriptBoxStyled>
-            <TextInput
-              type="text"
-              id={"card-name-" + props.id}
-              placeholder={"Card name"}
-              defaultValue={name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setName(e.target.value);
-              }}
+            <Editor
+              placeholder="Kanban card description..."
+              editorState={descriptionState}
+              onChange={setDescriptionState}
+              handleKeyCommand={handleKeyCommand}
             />
-            <Editor editorState={editorState} onChange={setEditorState} />
           </DescriptBoxStyled>
         )}
       </CardStyled>

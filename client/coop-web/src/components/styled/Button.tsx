@@ -9,27 +9,33 @@ interface ButtonInterface {
   maxHeight?: string;
 }
 
-const Button: React.FC<ButtonInterface> = (props: ButtonInterface) => {
-  const Btn = styled.button`
-    background-color: ${ElementColors.BUTTON_DARK_MODE};
-    color: ${ElementColors.BUTTON_TEXT_DARK_MODE};
-    font-family: ${Fonts.FONT_FAMILY};
-    text-align: center;
-    font-weight: 650;
-    width: 100%;
-    margin: 0.25rem 0rem;
-    padding: 0.5rem;
-    border-radius: 0.75em;
-    border: none;
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box; /* Firefox, other Gecko */
-    box-sizing: border-box; /* Opera/IE 8+ */
-    max-height: ${props.maxHeight ? props.maxHeight : "inherit"};
+const BtnStyled = styled.button`
+  background-color: ${ElementColors.BUTTON_DARK_MODE};
+  color: ${ElementColors.BUTTON_TEXT_DARK_MODE};
+  font-family: ${Fonts.FONT_FAMILY};
+  text-align: center;
+  font-weight: 650;
+  width: 100%;
+  margin: 0.25rem 0rem;
+  padding: 0.5rem;
+  border-radius: 0.75em;
+  border: none;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
 
-    :hover {
-      cursor: pointer;
-    }
-  `;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const Button: React.FC<ButtonInterface> = (props: ButtonInterface) => {
+  let Btn = BtnStyled;
+  if (props.maxHeight) {
+    Btn = styled(Btn)`
+      max-height: ${props.maxHeight ? props.maxHeight : "inherit"};
+    `;
+  }
 
   return (
     <Btn onClick={(e) => props.onClick(e)}>

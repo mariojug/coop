@@ -6,7 +6,6 @@ import Signup from "./pages/Signup";
 import VideoChat from "./views/VideoChat";
 import Project from "./views/Project";
 
-import "draft-js/dist/Draft.css";
 const App: React.FC = () => {
   return (
     <Router>
